@@ -36,7 +36,7 @@ export default function OAuthDocumentationPage() {
             alın.
           </li>
           <li className="mb-2">
-            Kullanıcıdan izin almak için request token ile izin ekranına
+            Kullanıcıdan izin almak için request token ile izin ekranına{" "}
             yönlendirin.
           </li>
           <li className="mb-2">
