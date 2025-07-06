@@ -97,7 +97,7 @@ export default function Features() {
       ],
       ctaTitle: 'Prêt à révolutionner votre jeu ?',
       ctaDesc: 'Rejoignez des milliers de développeurs qui construisent déjà le futur du jeu avec Web3APIs.',
-      ctaStart: 'Commencer l’essai gratuit',
+      ctaStart: 'Commencer l\'essai gratuit',
       ctaDemo: 'Planifier une démo',
     },
     es: {
