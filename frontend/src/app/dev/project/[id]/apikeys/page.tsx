@@ -64,7 +64,12 @@ export default function ApiKeysPage() {
       } else if (typeof apiKeys[0].permissions === "object" && apiKeys[0].permissions !== null) {
         permsObj = { ...permsObj, ...apiKeys[0].permissions };
       }
-      setPermissions(permsObj);
+      setPermissions({
+        read: permsObj.read ?? false,
+        write: permsObj.write ?? false,
+        update: permsObj.update ?? false,
+        delete: permsObj.delete ?? false,
+      });
       prevApiKeyId.current = apiKeys[0].id;
       setPermissionsChanged(false);
     }
