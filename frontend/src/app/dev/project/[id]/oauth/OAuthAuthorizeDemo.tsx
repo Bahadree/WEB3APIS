@@ -225,12 +225,12 @@ export default function OAuthAuthorizeDemo() {
       {error && <div className="mt-4 text-red-600">{error}</div>}
       {requestToken && (
         <div className="mt-4 text-sm break-all">
-          <b>Request Token:</b> <span>&#96;{requestToken}&#96;</span>
+          <b>Request Token:</b> <span>{'`'}{requestToken}{'`'}</span>
         </div>
       )}
       {accessToken && (
         <div className="mt-4 text-sm break-all">
-          <b>Access Token:</b> <span>&#96;{accessToken}&#96;</span>
+          <b>Access Token:</b> <span>{'`'}{accessToken}{'`'}</span>
         </div>
       )}
       {userInfo && (
