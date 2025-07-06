@@ -32,7 +32,7 @@ export default function OAuthDocumentationPage() {
         </p>
         <ol className="mb-4 list-decimal pl-6">
           <li className="mb-2">
-            API Key'iniz ve gerekli izinler (scope) ile <b>Request Token</b>{" "}
+            API Key&apos;iniz ve gerekli izinler (scope) ile <b>Request Token</b>{' '}
             alın.
           </li>
           <li className="mb-2">

@@ -32,7 +32,7 @@ export default function Stats() {
       title: '<span class="gradient-text">Oyun Topluluğu</span> Tarafından Güvenildi',
       subtitle: 'Web3 oyunlarının geleceğini inşa eden binlerce geliştiriciye katılın',
       stats: [
-        { label: 'Aktif Geliştirici', description: 'API’lerimizle geliştiriyor' },
+        { label: 'Aktif Geliştirici', description: 'APIlerimizle geliştiriyor' },
         { label: 'Entegre Oyun', description: 'Farklı türlerde' },
         { label: 'Oyuncu Hesabı', description: 'Güvenle yönetiliyor' },
         { label: 'NFT İşlemi', description: 'Pazarımızda alınıp satıldı' },
