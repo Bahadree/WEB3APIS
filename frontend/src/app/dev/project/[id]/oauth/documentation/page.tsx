@@ -95,6 +95,9 @@ export default function OAuthDocumentationPage() {
           </a>
         </Link>
       </div>
+      <pre className="bg-background p-3 rounded mb-2 overflow-x-auto">
+        {'GET /dev/project/' + projectId + '/documentation/oauth'}
+      </pre>
     </>
   );
 }

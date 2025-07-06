@@ -43,38 +43,23 @@ export default function OAuthDocsGrid() {
       <div className="bg-muted p-4 rounded-xl border mb-8 text-sm">
         <b>1. Request Token Al</b>
         <pre className="bg-background p-3 rounded mb-2 overflow-x-auto">
-          {`POST /api/oauth/request
-Content-Type: application/json
-{
-  "apiKey": "&lt;PROJE_API_KEY&gt;"
-}`}
+          {`POST /api/oauth/request\nContent-Type: application/json\n{\n  "apiKey": "\u003cPROJE_API_KEY\u003e"\n}`}
         </pre>
         <b>2. Kullanıcıyı İzin Ekranına Yönlendir</b>
         <pre className="bg-background p-3 rounded mb-2 overflow-x-auto">
-          {`GET /oauth/authorize?request_token=&lt;REQUEST_TOKEN&gt;`}
+          {`GET /oauth/authorize?request_token=\u003cREQUEST_TOKEN\u003e`}
         </pre>
         <b>3. Access Token Al</b>
         <pre className="bg-background p-3 rounded mb-2 overflow-x-auto">
-          {`POST /api/oauth/token
-Content-Type: application/json
-{
-  "request_token": "&lt;REQUEST_TOKEN&gt;"
-}`}
+          {`POST /api/oauth/token\nContent-Type: application/json\n{\n  "request_token": "\u003cREQUEST_TOKEN\u003e"\n}`}
         </pre>
         <b>4. Kullanıcı Bilgisi Al</b>
         <pre className="bg-background p-3 rounded mb-2 overflow-x-auto">
-          {`GET /api/oauth/userdata?access_token=&lt;ACCESS_TOKEN&gt;`}
+          {`GET /api/oauth/userdata?access_token=\u003cACCESS_TOKEN\u003e`}
         </pre>
         <div className="mt-2">
           <b>Örnek Kullanıcı Yanıtı:</b>
-          <pre className="bg-background p-3 rounded overflow-x-auto">{`{
-  "user": {
-    "id": "...",
-    "email": "...",
-    "username": "...",
-    "avatar_url": "..."
-  }
-}`}</pre>
+          <pre className="bg-background p-3 rounded overflow-x-auto">{`{\n  "user": {\n    "id": "...",\n    "email": "...",\n    "username": "...",\n    "avatar_url": "..."\n  }\n}`}</pre>
         </div>
         <ul className="list-disc pl-6 mt-2">
           <li>

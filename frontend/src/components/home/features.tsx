@@ -30,7 +30,7 @@ export default function Features() {
   }> = {
     en: {
       title: 'Powerful Features for',
-      subtitle: `Everything you need to build, deploy, and scale Web3 gaming experiences. From authentication to NFT marketplaces, we've got you covered.`,
+      subtitle: 'Everything you need to build, deploy, and scale Web3 gaming experiences. From authentication to NFT marketplaces, we\u2019ve got you covered.',
       features: [
         { icon: Code, title: 'Developer APIs', description: 'RESTful APIs and SDKs for easy integration with your games and applications.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Multi-Wallet Support', description: 'Connect MetaMask, TrustWallet, WalletConnect and more with seamless authentication.', gradient: 'from-blue-500 to-cyan-500' },
@@ -48,7 +48,7 @@ export default function Features() {
     },
     tr: {
       title: 'Web3 Oyunları için Güçlü Özellikler',
-      subtitle: `Kimlik doğrulamadan NFT pazarına kadar, Web3 oyun deneyimini oluşturmak, dağıtmak ve ölçeklemek için ihtiyacınız olan her şey.`,
+      subtitle: 'Kimlik doğrulamadan NFT pazarına kadar, Web3 oyun deneyimini oluşturmak, dağıtmak ve ölçeklemek için ihtiyacınız olan her şey.',
       features: [
         { icon: Code, title: 'Geliştirici APIleri', description: 'Oyunlarınız ve uygulamalarınız için kolay entegrasyon sağlayan RESTful API ve SDKlar.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Çoklu Cüzdan Desteği', description: 'MetaMask, TrustWallet, WalletConnect ve daha fazlası ile sorunsuz kimlik doğrulama.', gradient: 'from-blue-500 to-cyan-500' },
@@ -84,7 +84,7 @@ export default function Features() {
     },
     fr: {
       title: 'Fonctionnalités puissantes pour',
-      subtitle: `Tout ce dont vous avez besoin pour créer, déployer et faire évoluer des expériences de jeu Web3. De l'authentification aux places de marché NFT, tout est inclus.`,
+      subtitle: 'Tout ce dont vous avez besoin pour créer, déployer et faire évoluer des expériences de jeu Web3. De l\'authentification aux places de marché NFT, tout est inclus.',
       features: [
         { icon: Code, title: 'APIs Développeur', description: 'APIs RESTful et SDKs pour une intégration facile à vos jeux et applications.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Support Multi-Portefeuille', description: 'Connectez MetaMask, TrustWallet, WalletConnect et plus avec une authentification transparente.', gradient: 'from-blue-500 to-cyan-500' },
