@@ -31,7 +31,7 @@ export default function OAuthDocsGrid() {
           <b>Nasıl kullanılır?</b> Aşağıdaki demo ile OAuth akışını test
           edebilirsiniz. Önce bir request token alın, ardından kullanıcıdan izin
           isteyin ve access token ile verilere erişin. Gerçek uygulamanızda bu
-          akışı backend'inizden başlatmalısınız.
+          akışı backend&apos;inizden başlatmalısınız.
         </p>
       </div>
       <div className="max-w-2xl mx-auto mb-16">

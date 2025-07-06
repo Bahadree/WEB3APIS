@@ -48,7 +48,7 @@ export default function OAuthDocumentationPage() {
         </ol>
         <p className="mb-4">
           Aşağıdaki demo ile bu akışı adım adım test edebilirsiniz. Gerçek
-          uygulamanızda bu işlemleri backend'inizden başlatmanız önerilir.
+          uygulamanızda bu işlemleri backend&apos;inizden başlatmanız önerilir.
         </p>
       </div>
       <div className="max-w-2xl mx-auto mb-16">

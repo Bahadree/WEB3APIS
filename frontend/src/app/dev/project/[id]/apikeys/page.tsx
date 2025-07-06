@@ -133,7 +133,7 @@ export default function ApiKeysPage() {
           {showResetPopup && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
               <div className="bg-background p-6 rounded-lg max-w-sm w-full relative shadow-lg border flex flex-col items-center">
-                <div className="text-lg font-semibold mb-2 text-center">API Key'i sıfırlamak istediğinize emin misiniz?</div>
+                <div className="text-lg font-semibold mb-2 text-center">API Key&apos;i sıfırlamak istediğinize emin misiniz?</div>
                 <div className="text-muted-foreground text-sm mb-4 text-center">
                   Bu işlem mevcut anahtarı geçersiz kılar ve yeni bir API Key üretir.<br />
                   {apiKeys.length === 0 && (
@@ -186,7 +186,7 @@ export default function ApiKeysPage() {
           {showDeletePopup && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
               <div className="bg-background p-6 rounded-lg max-w-sm w-full relative shadow-lg border flex flex-col items-center">
-                <div className="text-lg font-semibold mb-2 text-center">API Key'i silmek istediğinize emin misiniz?</div>
+                <div className="text-lg font-semibold mb-2 text-center">API Key&apos;i silmek istediğinize emin misiniz?</div>
                 <div className="text-muted-foreground text-sm mb-4 text-center">
                   Bu işlem geri alınamaz. API anahtarı silindikten sonra erişim tamamen kapanır.
                 </div>

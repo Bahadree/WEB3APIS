@@ -218,7 +218,7 @@ export default function OAuthAuthorizeDemo() {
           onClick={handleUserInfo}
           disabled={loading}
         >
-          4. Kullanıcı Bilgisi Getir (JWT localStorage'dan)
+          4. Kullanıcı Bilgisi Getir (JWT localStorage&apos;dan)
         </button>
       </div>
       {loading && <div className="mt-4 text-primary">Yükleniyor...</div>}
