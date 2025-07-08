@@ -23,8 +23,7 @@ EXPOSE 5000
 
 # Health check (opsiyonel, Railway kendi health checkini kullanabilir)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:5000/health || exit 1 # Local geliştirme için
-  # Railway deployunda: curl -f https://web3apis-backend.up.railway.app/health
+  CMD curl -f http://backend:5000/health || exit 1
 
 # Uygulamayı başlat
 CMD ["npm", "start"]

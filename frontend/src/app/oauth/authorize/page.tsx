@@ -22,7 +22,7 @@ function OAuthAuthorizeInner() {
       }
       try {
         // Request token ile backend'den oyun bilgisi ve scope çek
-        const res = await fetch(`/api/oauth/requestinfo?request_token=${requestToken}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/oauth/requestinfo?request_token=${requestToken}`);
         const data = await res.json();
         if (data.error) {
           setError(data.error);
@@ -48,7 +48,7 @@ function OAuthAuthorizeInner() {
         setLoading(false);
         return;
       }
-      const res = await fetch("/api/oauth/authorize", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/oauth/authorize`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
         body: JSON.stringify({ request_token: requestToken })
