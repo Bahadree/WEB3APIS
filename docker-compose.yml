@@ -48,7 +48,8 @@ services:
       REDIS_URL: redis://redis:6379
       JWT_SECRET: dev-jwt-secret-change-in-production
       JWT_REFRESH_SECRET: dev-refresh-secret-change-in-production
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:3000 # Local geliştirme için
+      # Railway deployunda: FRONTEND_URL=https://web3apis.up.railway.app
     ports:
       - "5000:5000"
     depends_on:
@@ -62,7 +63,8 @@ services:
     command: npm run dev
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"] # Local geliştirme için
+      # Railway deployunda: "CMD", "curl", "-f", "https://web3apis-backend.up.railway.app/api/health"
       interval: 30s
       timeout: 10s
       retries: 3
@@ -74,8 +76,11 @@ services:
       dockerfile: Dockerfile
     container_name: web3apis-frontend
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:5000/api
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:5000/api # Local geliştirme için
+      # Railway deployunda .env veya Railway panelinden şu şekilde ayarlayın:
+      # NEXT_PUBLIC_API_URL=https://web3apis-backend.up.railway.app/api
+      NEXT_PUBLIC_APP_URL: http://localhost:3000 # Local geliştirme için
+      # Railway deployunda: NEXT_PUBLIC_APP_URL=https://web3apis.up.railway.app
     ports:
       - "3000:3000"
     depends_on:

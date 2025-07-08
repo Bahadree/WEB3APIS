@@ -154,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      const response = await axios.post('/auth/register', data)
+      const response = await axios.post(`${API_URL}/auth/register`, data)
       
       const { user, tokens } = response.data.data
       
@@ -174,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const walletAuth = async (data: WalletAuthData) => {
     try {
-      const response = await axios.post('/auth/wallet-auth', data)
+      const response = await axios.post(`${API_URL}/auth/wallet-auth`, data)
       
       const { user, tokens } = response.data.data
       

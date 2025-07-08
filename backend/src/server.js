@@ -34,7 +34,8 @@ app.use('/api/', limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Local geliştirme için
+  // Railway deployunda: FRONTEND_URL=https://web3apis.up.railway.app
   credentials: true,
 }));
 
