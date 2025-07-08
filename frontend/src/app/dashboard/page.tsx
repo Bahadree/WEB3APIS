@@ -141,7 +141,7 @@ export default function DashboardPage() {
   function getFullImageUrl(url?: string | null) {
     if (!url) return "/no-image.png";
     if (url.startsWith("http")) return url;
-    if (url.startsWith("/uploads/")) return `http://localhost:5000${url}`;
+    if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
     return url;
   }
 
