@@ -55,7 +55,7 @@ export default function ProjectSettingsPage() {
     setSaveMsg("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`/api/dev/projects/${project.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dev/projects/${project.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(field === "name" ? { name } : { description }),
@@ -84,7 +84,7 @@ export default function ProjectSettingsPage() {
       const formData = new FormData();
       formData.append("image", file);
       const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-      const res = await fetch(`/api/dev/projects/${project.id}/image`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dev/projects/${project.id}/image`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

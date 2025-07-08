@@ -77,7 +77,7 @@ axios.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken')
       if (refreshToken) {
         try {
-          const response = await axios.post('/auth/refresh-token', {
+          const response = await axios.post(`${API_URL}/auth/refresh-token`, {
             refreshToken
           })
           
@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/auth/me')
+      const response = await axios.get(`${API_URL}/auth/me`)
       setUser(response.data.data.user)
     } catch (error) {
       console.error('Failed to fetch user:', error)
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (identifier: string, password: string) => {
     try {
-      const response = await axios.post('/auth/login', {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         identifier,
         password
       })
@@ -205,7 +205,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!refreshToken) throw new Error('No refresh token')
 
     try {
-      const response = await axios.post('/auth/refresh-token', {
+      const response = await axios.post(`${API_URL}/auth/refresh-token`, {
         refreshToken
       })
       
