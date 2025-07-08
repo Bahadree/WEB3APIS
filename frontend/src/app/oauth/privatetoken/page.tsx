@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
@@ -10,7 +10,7 @@ interface GameInfo {
   scopes: string[];
 }
 
-export default function OAuthPage() {
+function OAuthPrivatetokenInner() {
   const searchParams = useSearchParams();
   const requestToken = searchParams.get('request_token');
   const [game, setGame] = useState<GameInfo | null>(null);
@@ -97,5 +97,13 @@ export default function OAuthPage() {
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full">İzin Ver</button>
       </form>
     </div>
+  );
+}
+
+export default function OAuthPage() {
+  return (
+    <Suspense fallback={<div>Yükleniyor...</div>}>
+      <OAuthPrivatetokenInner />
+    </Suspense>
   );
 }
