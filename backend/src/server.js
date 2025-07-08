@@ -33,9 +33,16 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
+console.log('CORS Origin:', process.env.FRONTEND_URL);
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:3000'];
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Local geliştirme için
-  // Railway deployunda: FRONTEND_URL=https://web3apis.up.railway.app
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
   credentials: true,
 }));
 
