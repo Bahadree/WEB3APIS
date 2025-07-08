@@ -330,7 +330,17 @@ function LoginInner() {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/auth/google`}
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+                    redirect_uri: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/google/callback`,
+                    response_type: "code",
+                    scope: "openid email profile",
+                    access_type: "offline",
+                    prompt: "consent"
+                  });
+                  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+                }}
                 className="w-full col-span-2 flex justify-center items-center py-2 px-4 border border-border rounded-lg bg-background text-base font-medium text-foreground hover:bg-accent transition-all duration-200"
                 style={{ width: '100%' }}
               >
