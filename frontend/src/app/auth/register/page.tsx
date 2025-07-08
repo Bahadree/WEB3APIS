@@ -6,6 +6,8 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { Loader2, Mail, Lock, User, Calendar } from "lucide-react";
 import { useLanguage } from "@/components/providers/language-provider";
 
+console.log('API_URL:', process.env.NEXT_PUBLIC_API_URL);
+
 export default function RegisterPage() {
   const { register: registerUser, isLoading } = useAuth();
   const { lang } = useLanguage();
