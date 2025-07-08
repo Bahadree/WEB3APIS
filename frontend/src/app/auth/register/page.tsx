@@ -185,7 +185,7 @@ export default function RegisterPage() {
           <div className="mt-6 flex flex-col gap-2">
             <button
               type="button"
-              onClick={() => window.location.href = '/api/auth/google'}
+              onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/auth/google`}
               className="w-full flex justify-center items-center py-2 px-4 border border-border rounded-lg bg-background text-base font-medium text-foreground hover:bg-accent transition-all duration-200"
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
@@ -198,7 +198,7 @@ export default function RegisterPage() {
             </button>
             <button
               type="button"
-              onClick={() => window.location.href = '/api/auth/apple'}
+              onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/auth/apple`}
               className="w-full flex justify-center items-center py-2 px-4 border border-border rounded-lg bg-background text-base font-medium text-foreground hover:bg-accent transition-all duration-200"
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">

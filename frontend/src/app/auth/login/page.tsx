@@ -330,7 +330,7 @@ function LoginInner() {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => window.location.href = '/api/auth/google'}
+                onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/auth/google`}
                 className="w-full col-span-2 flex justify-center items-center py-2 px-4 border border-border rounded-lg bg-background text-base font-medium text-foreground hover:bg-accent transition-all duration-200"
                 style={{ width: '100%' }}
               >
@@ -345,7 +345,7 @@ function LoginInner() {
 
               <button
                 type="button"
-                onClick={() => window.location.href = '/api/auth/apple'}
+                onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}/auth/apple`}
                 className="w-full col-span-2 flex justify-center items-center py-2 px-4 border border-border rounded-lg bg-background text-base font-medium text-foreground hover:bg-accent transition-all duration-200 mt-2"
                 style={{ width: '100%' }}
               >
