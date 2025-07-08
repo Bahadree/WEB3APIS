@@ -89,7 +89,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/nfts', nftRoutes);
 app.use('/api/dev', devRoutes);
-app.use('/api/dev', projectImageRoutes);
+app.use('/api/dev/projects', projectImageRoutes);
 app.use('/api/oauth', oauthRoutes);
 app.use('/uploads', express.static(require('path').join(__dirname, '../uploads')));
 
