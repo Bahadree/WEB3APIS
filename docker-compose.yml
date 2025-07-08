@@ -49,6 +49,8 @@ services:
       JWT_SECRET: dev-jwt-secret-change-in-production
       JWT_REFRESH_SECRET: dev-refresh-secret-change-in-production
       FRONTEND_URL: ${FRONTEND_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     ports:
       - "5000:5000"
     depends_on:
@@ -62,7 +64,7 @@ services:
     command: npm run dev
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:5000/api/health"]
+      test: ["CMD", "curl", "-f", "http://backend:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3

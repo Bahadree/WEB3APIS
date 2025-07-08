@@ -1,5 +1,6 @@
 'use client'
 
+import { easeOut } from 'framer-motion';
 import { motion } from 'framer-motion'
 import { 
   Code, 
@@ -21,7 +22,6 @@ export default function Features() {
   type LangKey = 'en' | 'tr' | 'de' | 'fr' | 'es' | 'ru' | 'zh';
   const t: Record<LangKey, {
     title: string;
-    subtitle: string;
     features: { icon: any; title: string; description: string; gradient: string }[];
     ctaTitle: string;
     ctaDesc: string;
@@ -30,7 +30,6 @@ export default function Features() {
   }> = {
     en: {
       title: 'Powerful Features for',
-      subtitle: 'Everything you need to build, deploy, and scale Web3 gaming experiences. From authentication to NFT marketplaces, we\u2019ve got you covered.',
       features: [
         { icon: Code, title: 'Developer APIs', description: 'RESTful APIs and SDKs for easy integration with your games and applications.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Multi-Wallet Support', description: 'Connect MetaMask, TrustWallet, WalletConnect and more with seamless authentication.', gradient: 'from-blue-500 to-cyan-500' },
@@ -48,7 +47,6 @@ export default function Features() {
     },
     tr: {
       title: 'Web3 Oyunları için Güçlü Özellikler',
-      subtitle: 'Kimlik doğrulamadan NFT pazarına kadar, Web3 oyun deneyimini oluşturmak, dağıtmak ve ölçeklemek için ihtiyacınız olan her şey.',
       features: [
         { icon: Code, title: 'Geliştirici APIleri', description: 'Oyunlarınız ve uygulamalarınız için kolay entegrasyon sağlayan RESTful API ve SDKlar.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Çoklu Cüzdan Desteği', description: 'MetaMask, TrustWallet, WalletConnect ve daha fazlası ile sorunsuz kimlik doğrulama.', gradient: 'from-blue-500 to-cyan-500' },
@@ -66,7 +64,6 @@ export default function Features() {
     },
     de: {
       title: 'Leistungsstarke Funktionen für',
-      subtitle: 'Alles, was Sie brauchen, um Web3-Gaming-Erlebnisse zu erstellen, bereitzustellen und zu skalieren. Von Authentifizierung bis NFT-Marktplätzen – alles aus einer Hand.',
       features: [
         { icon: Code, title: 'Entwickler-APIs', description: 'RESTful APIs und SDKs für die einfache Integration in Ihre Spiele und Anwendungen.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Multi-Wallet-Unterstützung', description: 'Verbinden Sie MetaMask, TrustWallet, WalletConnect und mehr mit nahtloser Authentifizierung.', gradient: 'from-blue-500 to-cyan-500' },
@@ -84,7 +81,6 @@ export default function Features() {
     },
     fr: {
       title: 'Fonctionnalités puissantes pour',
-      subtitle: 'Tout ce dont vous avez besoin pour créer, déployer et faire évoluer des expériences de jeu Web3. De l\'authentification aux places de marché NFT, tout est inclus.',
       features: [
         { icon: Code, title: 'APIs Développeur', description: 'APIs RESTful et SDKs pour une intégration facile à vos jeux et applications.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Support Multi-Portefeuille', description: 'Connectez MetaMask, TrustWallet, WalletConnect et plus avec une authentification transparente.', gradient: 'from-blue-500 to-cyan-500' },
@@ -102,7 +98,6 @@ export default function Features() {
     },
     es: {
       title: 'Potentes funciones para',
-      subtitle: 'Todo lo que necesitas para crear, lanzar y escalar experiencias de juego Web3. Desde autenticación hasta mercados NFT, lo tenemos todo.',
       features: [
         { icon: Code, title: 'APIs para desarrolladores', description: 'APIs RESTful y SDKs para una integración sencilla con tus juegos y aplicaciones.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Soporte Multi-Wallet', description: 'Conecta MetaMask, TrustWallet, WalletConnect y más con autenticación sin fisuras.', gradient: 'from-blue-500 to-cyan-500' },
@@ -120,7 +115,6 @@ export default function Features() {
     },
     ru: {
       title: 'Мощные возможности для',
-      subtitle: 'Всё, что нужно для создания, запуска и масштабирования Web3-игр. От аутентификации до NFT-маркетплейсов — всё включено.',
       features: [
         { icon: Code, title: 'API для разработчиков', description: 'RESTful API и SDK для легкой интеграции с вашими играми и приложениями.', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: 'Поддержка нескольких кошельков', description: 'Подключайте MetaMask, TrustWallet, WalletConnect и другие с бесшовной аутентификацией.', gradient: 'from-blue-500 to-cyan-500' },
@@ -138,7 +132,6 @@ export default function Features() {
     },
     zh: {
       title: '强大的 Web3 游戏功能',
-      subtitle: '构建、部署和扩展 Web3 游戏体验所需的一切。从认证到 NFT 市场，我们应有尽有。',
       features: [
         { icon: Code, title: '开发者 API', description: 'RESTful API 和 SDK，轻松集成到您的游戏和应用。', gradient: 'from-purple-500 to-pink-500' },
         { icon: Wallet, title: '多钱包支持', description: '无缝认证，支持 MetaMask、TrustWallet、WalletConnect 等。', gradient: 'from-blue-500 to-cyan-500' },
@@ -168,16 +161,17 @@ export default function Features() {
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: easeOut, // string yerine fonksiyon
     },
-  }
+  },
+};
+
 
   return (
     <section id="features" className="py-20 bg-muted/30">
@@ -193,9 +187,6 @@ export default function Features() {
             {currentT.title}{' '}
             <span className="gradient-text">Web3 Gaming</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            {currentT.subtitle}
-          </p>
         </motion.div>
 
         <motion.div

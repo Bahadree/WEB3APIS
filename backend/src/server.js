@@ -11,7 +11,6 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/games');
 const nftRoutes = require('./routes/nfts');
-const walletRoutes = require('./routes/wallets');
 const devRoutes = require('./routes/dev');
 const projectImageRoutes = require('./routes/projectImage');
 const oauthRoutes = require('./routes/oauth');
@@ -33,9 +32,27 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
-console.log('CORS Origin:', process.env.FRONTEND_URL);
-const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:3000'];
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+  'https://web3apis.up.railway.app'
+];
 app.use(cors({
+  origin: (origin, callback) => {
+    // origin undefined ise (ör: Postman, curl) veya izin verilenler arasında ise izin ver
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error('CORS engellendi:', origin);
+      callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+// Preflight (OPTIONS) istekleri için genel yanıt
+app.options('*', cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -44,6 +61,8 @@ app.use(cors({
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Body parsing middleware
@@ -69,7 +88,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/nfts', nftRoutes);
-app.use('/api/wallets', walletRoutes);
 app.use('/api/dev', devRoutes);
 app.use('/api/dev', projectImageRoutes);
 app.use('/api/oauth', oauthRoutes);
