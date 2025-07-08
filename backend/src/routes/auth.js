@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const AppleStrategy = require('passport-apple').Strategy;
 const { SiweMessage } = require('siwe');
 const { ethers } = require('ethers');
 
@@ -493,126 +492,6 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 // Google OAuth callback endpoint
 router.get('/google/callback', passport.authenticate('google', {
-  failureRedirect: process.env.FRONTEND_URL + '/auth/login',
-  session: false
-}), async (req, res) => {
-  // Generate JWT tokens for the user
-  const { accessToken, refreshToken } = generateTokens(req.user.id);
-  // Redirect to frontend with tokens (or set cookie, etc.)
-  res.redirect(`${process.env.FRONTEND_URL}/auth/login?accessToken=${accessToken}&refreshToken=${refreshToken}`);
-});
-
-// Apple OAuth Strategy
-passport.use(new AppleStrategy({
-  clientID: process.env.APPLE_CLIENT_ID,
-  teamID: process.env.APPLE_TEAM_ID,
-  keyID: process.env.APPLE_KEY_ID,
-  privateKey: process.env.APPLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Replace escaped newlines
-  callbackURL: process.env.FRONTEND_URL + '/api/auth/apple/callback',
-}, async (accessToken, refreshToken, decodedIdToken, done) => {
-  try {
-    const { sub, email } = decodedIdToken;
-
-    // Find or create user in DB
-    let userResult = await query('SELECT id, email, username FROM users WHERE apple_id = $1 OR email = $2', [sub, email]);
-    let user;
-    if (userResult.rows.length === 0) {
-      // Create new user
-      const username = email.split('@')[0];
-      const insertResult = await query(
-        'INSERT INTO users (email, username, apple_id, is_verified, gdpr_consent, terms_consent, privacy_consent) VALUES ($1, $2, $3, true, true, true, true) RETURNING id, email, username',
-        [email, username, sub]
-      );
-      user = insertResult.rows[0];
-    } else {
-      user = userResult.rows[0];
-    }
-    return done(null, user);
-  } catch (err) {
-    return done(err, null);
-  }
-}));
-
-// Apple OAuth login endpoint
-router.post('/apple/login', [
-  body('email').isEmail(),
-  body('password').notEmpty()
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation errors',
-        errors: errors.array()
-      });
-    }
-
-    const { email, password } = req.body;
-
-    // Find user by email
-    const result = await query(`
-      SELECT id, email, username, password_hash, full_name, is_active, is_verified
-      FROM users 
-      WHERE email = $1 AND is_active = true
-    `, [email]);
-
-    if (result.rows.length === 0) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
-
-    const user = result.rows[0];
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
-    if (!isValidPassword) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
-
-    // Update last login
-    await query(
-      'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1',
-      [user.id]
-    );
-
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user.id);
-
-    res.json({
-      success: true,
-      message: 'Login successful',
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          username: user.username,
-          fullName: user.full_name,
-          isVerified: user.is_verified
-        },
-        tokens: {
-          accessToken,
-          refreshToken
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-});
-
-// Apple OAuth callback endpoint
-router.post('/apple/callback', passport.authenticate('apple', {
   failureRedirect: process.env.FRONTEND_URL + '/auth/login',
   session: false
 }), async (req, res) => {

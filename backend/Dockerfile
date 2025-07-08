@@ -1,29 +1,29 @@
-FROM node:18-alpine
+FROM node:20.19.0-alpine
 
 WORKDIR /app
 
-# Install curl for health check and git for npm dependencies
+# Sadece gerekli araçları kur
 RUN apk add --no-cache curl git
 
-# Copy package files
+# Paket dosyalarını kopyala
 COPY package*.json ./
 
-# Clear npm cache and install dependencies
+# Bağımlılıkları yükle
 RUN npm cache clean --force
 RUN npm install --frozen-lockfile || npm install
 
-# Copy source code
+# Kaynak kodunu kopyala
 COPY . .
 
-# Create uploads directory
+# uploads klasörü oluştur (opsiyonel, uygulama dosya yüklemesi yapıyorsa)
 RUN mkdir -p uploads
 
-# Expose port
+# Uygulama portunu aç
 EXPOSE 5000
 
-# Health check
+# Health check (opsiyonel, Railway kendi health checkini kullanabilir)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:5000/health || exit 1
 
-# Start the application
+# Uygulamayı başlat
 CMD ["npm", "start"]
