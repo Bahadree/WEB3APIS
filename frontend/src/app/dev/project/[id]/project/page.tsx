@@ -1,6 +1,7 @@
 "use client";
 
 import { useProjectData } from "@/hooks/useProjectData";
+import type { Project } from "@/hooks/useProjectData";
 import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
 import { motion } from "framer-motion";
@@ -22,7 +23,7 @@ export default function ProjectSettingsPage() {
   const [description, setDescription] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
-  const [localProject, setLocalProject] = useState(null);
+  const [localProject, setLocalProject] = useState<Project | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState("");
@@ -34,7 +35,7 @@ export default function ProjectSettingsPage() {
       if (!editDesc) setDescription(project.description || "");
     }
     if (project && project.imageUrl) {
-      setImagePreview(getFullImageUrl(project.imageUrl));
+      setImagePreview(getFullImageUrl(project.imageUrl) ?? null);
     }
   }, [project, editName, editDesc]);
 
@@ -63,7 +64,7 @@ export default function ProjectSettingsPage() {
       setSaveMsg("Kaydedildi!");
       window.location.reload(); // Başarılı güncelleme sonrası sayfayı yenile
       // Güncellenen alanı local state'e yaz
-      setLocalProject(prev => prev ? { ...prev, [field]: field === "name" ? name : description } : null);
+      setLocalProject((prev: Project | null) => prev ? { ...prev, [field]: field === "name" ? name : description } : null);
       if (field === "name") setEditName(false);
       if (field === "description") setEditDesc(false);
     } catch {
@@ -90,7 +91,7 @@ export default function ProjectSettingsPage() {
       });
       if (!res.ok) throw new Error("Yükleme başarısız");
       const data = await res.json();
-      setImagePreview(getFullImageUrl(data.imageUrl)); // Backend imageUrl döndürmeli
+      setImagePreview(getFullImageUrl(data.imageUrl) ?? null); // Backend imageUrl döndürmeli
       setSaveMsg("Resim yüklendi!");
     } catch (err) {
       setImageError("Resim yüklenemedi.");
