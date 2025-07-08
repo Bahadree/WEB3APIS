@@ -3,6 +3,9 @@ const router = express.Router();
 const crypto = require('crypto');
 const { validateApiKey, getGameInfoByApiKey } = require('../utils/oauth');
 const auth = require('../middleware/auth');
+const axios = require('axios');
+const { query } = require('../config/database');
+const jwt = require('jsonwebtoken');
 
 // 1. Oyun API key ile request_token alır
 router.post('/request', async (req, res) => {
@@ -166,6 +169,66 @@ router.get('/requestinfo', async (req, res) => {
     scopes: reqData.scopes || [],
     expires_in: 300
   });
+});
+
+// Google OAuth callback: kodu frontend'e yönlendir
+router.get('/google/callback', (req, res) => {
+  const code = req.query.code;
+  const frontendCallback = `${process.env.FRONTEND_URL}/auth/google/callback?code=${code}`;
+  return res.redirect(frontendCallback);
+});
+
+// Frontendden kodu alıp Google'dan token ve user info çek, kaydet, JWT döndür
+router.post('/google/callback', async (req, res) => {
+  const { code } = req.body;
+  if (!code) return res.status(400).json({ error: 'Code is required' });
+  try {
+    // Google'dan access token al
+    const tokenRes = await axios.post('https://oauth2.googleapis.com/token', {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${process.env.FRONTEND_URL}/auth/google/callback`,
+      grant_type: 'authorization_code',
+    });
+    const { access_token, id_token } = tokenRes.data;
+    // Google'dan user info al
+    const userRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const googleUser = userRes.data;
+    // Kullanıcıyı DB'ye kaydet veya güncelle
+    let user = null;
+    const userResult = await query('SELECT * FROM users WHERE email = $1', [googleUser.email]);
+    if (userResult.rows.length > 0) {
+      user = userResult.rows[0];
+    } else {
+      const insertResult = await query(
+        'INSERT INTO users (email, username, full_name, avatar_url, is_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [
+          googleUser.email,
+          googleUser.email.split('@')[0],
+          googleUser.name,
+          googleUser.picture,
+          true,
+        ]
+      );
+      user = insertResult.rows[0];
+    }
+    // OAuth provider tablosuna ekle
+    await query(
+      `INSERT INTO oauth_providers (user_id, provider, provider_id, provider_email, provider_data)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (provider, provider_id) DO NOTHING`,
+      [user.id, 'google', googleUser.sub, googleUser.email, JSON.stringify(googleUser)]
+    );
+    // JWT oluştur
+    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    return res.json({ token });
+  } catch (err) {
+    console.error('Google OAuth error:', err.response?.data || err.message);
+    return res.status(500).json({ error: 'Google OAuth failed' });
+  }
 });
 
 module.exports = router;
