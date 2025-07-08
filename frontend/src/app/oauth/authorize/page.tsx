@@ -1,8 +1,8 @@
 "use client";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function OAuthAuthorizePage() {
+function OAuthAuthorizeInner() {
   const searchParams = useSearchParams();
   const requestToken = searchParams.get("request_token");
   const [loading, setLoading] = useState(true);
@@ -88,5 +88,13 @@ export default function OAuthAuthorizePage() {
         İzin Ver
       </button>
     </div>
+  );
+}
+
+export default function OAuthAuthorizePage() {
+  return (
+    <Suspense fallback={<div className="max-w-lg mx-auto mt-16 text-center text-primary">Yükleniyor...</div>}>
+      <OAuthAuthorizeInner />
+    </Suspense>
   );
 }

@@ -3,12 +3,27 @@
 import { useProjectData } from "@/hooks/useProjectData";
 import { useEffect, useRef, useState } from "react";
 
+// Types for better type safety
+interface ApiKey {
+  id: string;
+  api_key: string;
+  key_name: string;
+  permissions: string[] | Record<string, boolean>;
+}
+
+interface Permissions {
+  read: boolean;
+  write: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
 export default function ApiKeysPage() {
   const { project, loading, error } = useProjectData();
-  const [apiKeys, setApiKeys] = useState<any[]>([]);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState("");
-  const [apiKeyCreated, setApiKeyCreated] = useState<any | null>(null);
+  const [apiKeyCreated, setApiKeyCreated] = useState<ApiKey | null>(null);
   const [showResetPopup, setShowResetPopup] = useState(false);
   const [resettingApi, setResettingApi] = useState(false);
   const [resetError, setResetError] = useState("");
@@ -18,7 +33,7 @@ export default function ApiKeysPage() {
   const [deleteKeyId, setDeleteKeyId] = useState<string | null>(null);
 
   // Permissions state
-  const [permissions, setPermissions] = useState({
+  const [permissions, setPermissions] = useState<Permissions>({
     read: true,
     write: false,
     update: false,
@@ -42,13 +57,13 @@ export default function ApiKeysPage() {
     setApiKeyCreated(null);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     fetch(`/api/dev/projects/${project.id}`, {
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
       .then((d) => setApiKeys(d.data.project.apiKeys || []))
       .catch(() => setApiError("API error"))
       .finally(() => setApiLoading(false));
-  }, [project?.id]);
+  }, [project?.id, setApiLoading, setApiError, setApiKeyCreated, setApiKeys]);
 
   useEffect(() => {
     if (
@@ -56,12 +71,15 @@ export default function ApiKeysPage() {
       apiKeys[0].id !== prevApiKeyId.current &&
       !permissionsChanged
     ) {
-      let permsObj: { [key: string]: boolean } = { read: false, write: false, update: false, delete: false };
+      let permsObj: Permissions = { read: false, write: false, update: false, delete: false };
       if (Array.isArray(apiKeys[0].permissions)) {
-        apiKeys[0].permissions.forEach((key: string) => {
-          permsObj[key] = true;
+        (apiKeys[0].permissions as string[]).forEach((key) => {
+          if (key in permsObj) permsObj[key as keyof Permissions] = true;
         });
-      } else if (typeof apiKeys[0].permissions === "object" && apiKeys[0].permissions !== null) {
+      } else if (
+        typeof apiKeys[0].permissions === "object" &&
+        apiKeys[0].permissions !== null
+      ) {
         permsObj = { ...permsObj, ...apiKeys[0].permissions };
       }
       setPermissions({
@@ -73,7 +91,7 @@ export default function ApiKeysPage() {
       prevApiKeyId.current = apiKeys[0].id;
       setPermissionsChanged(false);
     }
-  }, [apiKeys, permissionsChanged]);
+  }, [apiKeys, permissionsChanged, setPermissions, setPermissionsChanged]);
 
   const handleDeleteApiKey = async () => {
     if (!project || !deleteKeyId) return;
