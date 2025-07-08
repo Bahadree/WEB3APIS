@@ -100,6 +100,9 @@ function OAuthPrivatetokenInner() {
   );
 }
 
+// Metadata export removed from client component. 
+// Move this to a separate page.metadata.ts file in the same directory if needed.
+
 export default function OAuthPage() {
   return (
     <Suspense fallback={<div>Yükleniyor...</div>}>

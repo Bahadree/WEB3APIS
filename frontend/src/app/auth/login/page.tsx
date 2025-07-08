@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/components/providers/auth-provider'
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
@@ -18,12 +18,14 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>
 
-export default function LoginPage() {
+type LangKey = 'en' | 'tr' | 'de' | 'fr' | 'es' | 'ru' | 'zh'
+
+function LoginInner() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const { lang } = useLanguage()
-  const [hydratedLang, setHydratedLang] = useState<'en' | 'tr' | 'de' | 'fr' | 'es' | 'ru' | 'zh'>('en')
+  const [hydratedLang, setHydratedLang] = useState<LangKey>('en')
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -44,7 +46,6 @@ export default function LoginPage() {
     }
   }, [searchParams, router])
 
-  type LangKey = 'en' | 'tr' | 'de' | 'fr' | 'es' | 'ru' | 'zh'
   const t: Record<LangKey, {
     welcome: string;
     signIn: string;
@@ -366,4 +367,12 @@ export default function LoginPage() {
       </div>
     </div>
   )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Yükleniyor...</div>}>
+      <LoginInner />
+    </Suspense>
+  );
 }
