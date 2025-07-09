@@ -73,7 +73,7 @@ function OAuthPrivatetokenInner() {
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
       <div className="flex items-center mb-4">
         {game?.logo && (
-          <Image src={game.logo} alt="logo" width={48} height={48} className="rounded mr-3" />
+          <Image src={game.logo ? game.logo : "/no-image.png"} alt="logo" width={48} height={48} className="rounded mr-3" />
         )}
         <div>
           <div className="font-bold text-lg">{game?.name}</div>

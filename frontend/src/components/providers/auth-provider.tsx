@@ -130,7 +130,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      const response = await axios.post('/auth/register', data)
+      // Doğru proxy ile backend'e gitsin diye endpoint'i /api/auth/register yapıyoruz
+      const response = await axios.post('/api/auth/register', data)
       
       const { user, tokens } = response.data.data
       

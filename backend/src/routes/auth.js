@@ -15,12 +15,13 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Register endpoint
+console.log('Register endpoint called');
 router.post('/register', [
   body('email').isEmail().normalizeEmail(),
   body('username').isLength({ min: 3, max: 30 }).trim(),
   body('password').isLength({ min: 6 }),
   body('fullName').optional().trim(),
-  body('dateOfBirth').optional().isISO8601(),
+  body('dateOfBirth').isISO8601(), // zorunlu hale getirildi
   body('gdprConsent').isBoolean(),
   body('termsConsent').isBoolean(),
   body('privacyConsent').isBoolean()
@@ -39,12 +40,30 @@ router.post('/register', [
       email,
       username,
       password,
-      fullName,
-      dateOfBirth,
+      fullName = null,
+      dateOfBirth, // zorunlu
       gdprConsent,
       termsConsent,
       privacyConsent
     } = req.body;
+
+    // Gelen veriyi logla (debug için, prod'da kaldırılabilir)
+    console.log('Register body:', req.body);
+
+    if (!dateOfBirth) {
+      return res.status(400).json({
+        success: false,
+        message: 'Date of birth is required.'
+      });
+    }
+    // ISO 8601 format kontrolü (YYYY-MM-DD)
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!isoDateRegex.test(dateOfBirth)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Date of birth must be in YYYY-MM-DD format.'
+      });
+    }
 
     // Check required consents
     if (!gdprConsent || !termsConsent || !privacyConsent) {
@@ -63,7 +82,7 @@ router.post('/register', [
     if (existingUser.rows.length > 0) {
       return res.status(400).json({
         success: false,
-        message: 'User with this email or username already exists'
+        message: 'User with this email or username exists'
       });
     }
 
@@ -72,21 +91,46 @@ router.post('/register', [
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Create user
-    const result = await query(`
-      INSERT INTO users (
-        email, username, password_hash, full_name, date_of_birth,
-        gdpr_consent, terms_consent, privacy_consent
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id, email, username, full_name, created_at
-    `, [email, username, passwordHash, fullName, dateOfBirth, gdprConsent, termsConsent, privacyConsent]);
-
-    const user = result.rows[0];
+    let user;
+    try {
+      const result = await query(`
+        INSERT INTO users (
+          email, username, password_hash, full_name, date_of_birth,
+          gdpr_consent, terms_consent, privacy_consent, is_active
+        ) VALUES ($1, $2, $3, $4, $5::date, $6, $7, $8, true)
+        RETURNING id, email, username, full_name, created_at
+      `, [email, username, passwordHash, fullName, dateOfBirth, gdprConsent, termsConsent, privacyConsent]);
+      user = result.rows[0];
+    } catch (dbError) {
+      if (dbError.code === '23505') { // unique_violation
+        return res.status(400).json({
+          success: false,
+          message: 'User with this email or username already exists'
+        });
+      }
+      if (dbError.code === '23502' && dbError.column === 'date_of_birth') {
+        return res.status(400).json({
+          success: false,
+          message: 'Date of birth is required (DB constraint).'
+        });
+      }
+      console.error('DB error during registration:', dbError);
+      return res.status(500).json({
+        success: false,
+        message: 'Database error during registration',
+        dbError: dbError.detail || dbError.message
+      });
+    }
 
     // Create user preferences
-    await query(
-      'INSERT INTO user_preferences (user_id) VALUES ($1)',
-      [user.id]
-    );
+    try {
+      await query(
+        'INSERT INTO user_preferences (user_id) VALUES ($1)',
+        [user.id]
+      );
+    } catch (prefError) {
+      console.error('User preferences creation failed:', prefError);
+    }
 
     // Generate tokens
     const { accessToken, refreshToken } = generateTokens(user.id);
@@ -117,7 +161,7 @@ router.post('/register', [
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Registration error (outer catch):', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
@@ -146,7 +190,7 @@ router.post('/login', [
     const result = await query(`
       SELECT id, email, username, password_hash, full_name, is_active, is_verified
       FROM users 
-      WHERE (email = $1 OR username = $1) AND is_active = true
+      WHERE (email = $1 OR username = $1)
     `, [identifier]);
 
     if (result.rows.length === 0) {
@@ -157,6 +201,13 @@ router.post('/login', [
     }
 
     const user = result.rows[0];
+
+    if (!user.is_active) {
+      return res.status(403).json({
+        success: false,
+        message: 'User account is not active. Please contact support.'
+      });
+    }
 
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password_hash);

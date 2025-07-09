@@ -1,6 +1,7 @@
 "use client";
 
 import { useProjectData } from "@/hooks/useProjectData";
+import { toast } from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
 
 // Types for better type safety
@@ -56,12 +57,18 @@ export default function ApiKeysPage() {
     setApiError("");
     setApiKeyCreated(null);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}`, {
+    fetch(`/api/dev/projects/${project.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((r) => r.json())
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err?.message || "API error");
+        }
+        return r.json();
+      })
       .then((d) => setApiKeys(d.data.project.apiKeys || []))
-      .catch(() => setApiError("API error"))
+      .catch((e) => setApiError(e.message || "API error"))
       .finally(() => setApiLoading(false));
   }, [project?.id, setApiLoading, setApiError, setApiKeyCreated, setApiKeys]);
 
@@ -93,22 +100,40 @@ export default function ApiKeysPage() {
     }
   }, [apiKeys, permissionsChanged, setPermissions, setPermissionsChanged]);
 
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      setSuccessMessage("");
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (apiError) {
+      toast.error(apiError);
+      setApiError("");
+    }
+  }, [apiError]);
+
   const handleDeleteApiKey = async () => {
     if (!project || !deleteKeyId) return;
     setApiLoading(true);
     setApiError("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/${deleteKeyId}`, {
+      const res = await fetch(`/api/dev/projects/${project.id}/api-keys/${deleteKeyId}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.message || "API error");
+      }
       setApiKeys((prev) => prev.filter((k) => k.id !== deleteKeyId));
       setShowDeletePopup(false);
       setDeleteKeyId(null);
-    } catch {
-      setApiError("API error");
+      setSuccessMessage("API anahtarı başarıyla silindi.");
+    } catch (e: any) {
+      setApiError(e.message || "API error");
     } finally {
       setApiLoading(false);
     }
@@ -175,18 +200,22 @@ export default function ApiKeysPage() {
                       setApiKeyCreated(null);
                       const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
                       try {
-                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/reset`, {
+                        const res = await fetch(`/api/dev/projects/${project.id}/api-keys/reset`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                           body: JSON.stringify({ permissions }),
                         });
-                        if (!res.ok) throw new Error("API error");
+                        if (!res.ok) {
+                          const err = await res.json().catch(() => ({}));
+                          throw new Error(err?.message || "API error");
+                        }
                         const d = await res.json();
                         setApiKeys([d.data.apiKey]);
                         setApiKeyCreated(d.data.apiKey);
                         setShowResetPopup(false);
-                      } catch {
-                        setResetError("API error");
+                        setSuccessMessage("API anahtarı başarıyla oluşturuldu/sıfırlandı.");
+                      } catch (e: any) {
+                        setResetError(e.message || "API error");
                       } finally {
                         setResettingApi(false);
                       }
@@ -281,17 +310,22 @@ export default function ApiKeysPage() {
                   if (!project || !apiKeys[0]) return;
                   setApiLoading(true);
                   setApiError("");
+                  setSuccessMessage("");
                   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
                   try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/${apiKeys[0].id}`, {
+                    const res = await fetch(`/api/dev/projects/${project.id}/api-keys/${apiKeys[0].id}`, {
                       method: "PUT",
                       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                       body: JSON.stringify({ permissions }),
                     });
-                    if (!res.ok) throw new Error("API error");
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}));
+                      throw new Error(err?.message || "API error");
+                    }
                     setPermissionsChanged(false);
-                  } catch {
-                    setApiError("API error");
+                    setSuccessMessage("API anahtarı yetkileri güncellendi.");
+                  } catch (e: any) {
+                    setApiError(e.message || "API error");
                   } finally {
                     setApiLoading(false);
                   }

@@ -276,7 +276,7 @@ export default function DevelopersPage() {
                           {/* Background image as absolute fill */}
                           <div className="absolute inset-0 z-0">
                             <Image
-                              src={getFullImageUrl(p.imageUrl) as string}
+                              src={getFullImageUrl(p.imageUrl) ? getFullImageUrl(p.imageUrl) : "/no-image.png"}
                               alt={p.name}
                               fill
                               className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"

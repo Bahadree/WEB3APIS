@@ -205,8 +205,15 @@ function LoginInner() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true)
     try {
+      // login fonksiyonunu çağırırken, gereksiz Authorization header eklenmediğinden emin olun
       await login(data.identifier, data.password)
-    } catch (error) {
+    } catch (error: any) {
+      // 401 hatası için kullanıcıya mesaj göster
+      if (error?.response?.status === 401 || error?.status === 401) {
+        toast.error('Kullanıcı adı veya şifre hatalı.');
+      } else {
+        toast.error('Giriş başarısız. Lütfen tekrar deneyin.');
+      }
       console.error('Login failed:', error)
     } finally {
       setIsLoading(false)

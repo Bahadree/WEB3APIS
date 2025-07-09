@@ -172,7 +172,14 @@ export default function RegisterPage() {
       const { passwordConfirm, ...registerData } = form;
       await registerUser(registerData);
     } catch (err: any) {
-      setError(err.response?.data?.message || currentT.registrationFailed);
+      // 401 veya diğer hata durumları için kullanıcıya daha açıklayıcı mesaj göster
+      if (err?.response?.status === 401 || err?.status === 401) {
+        setError("Bu e-posta veya kullanıcı adı ile kayıt olunamaz. Lütfen farklı bir e-posta/kullanıcı adı deneyin.");
+      } else if (err?.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(currentT.registrationFailed);
+      }
     }
   };
 

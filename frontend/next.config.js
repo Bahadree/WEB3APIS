@@ -23,9 +23,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL
-          ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '') + '/api/:path*'
-          : '/api/:path*',
+        destination: 'http://backend:5000/api/:path*', // Docker ortamında backend servisi
       },
       {
         source: '/no-image.png',

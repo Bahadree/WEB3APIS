@@ -119,7 +119,7 @@ export default function ProjectSettingsPage() {
           {imagePreview ? (
             <div className="mb-2">
               <Image
-                src={imagePreview}
+                src={imagePreview ? imagePreview : "/no-image.png"}
                 alt="Oyun Resmi"
                 width={180}
                 height={180}

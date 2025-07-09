@@ -182,7 +182,7 @@ export default function DashboardPage() {
           </button>
           <div className="w-full aspect-video rounded-xl overflow-hidden mb-4">
             <Image
-              src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+              src={getFullImageUrl(game.image_url) ? getFullImageUrl(game.image_url) : "/placeholder.png"}
               alt={game.name || "Game image"}
               fill
               className="object-cover w-full h-full"
@@ -277,7 +277,7 @@ export default function DashboardPage() {
                       {/* Background image as absolute fill */}
                       <div className="absolute inset-0 z-0">
                         <Image
-                          src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+                          src={getFullImageUrl(game.image_url) ? getFullImageUrl(game.image_url) : "/placeholder.png"}
                           alt={game.name || "Game image"}
                           fill
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                       {/* Background image as absolute fill */}
                       <div className="absolute inset-0 z-0">
                         <Image
-                          src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+                          src={getFullImageUrl(game.image_url) ? getFullImageUrl(game.image_url) : "/placeholder.png"}
                           alt={game.name || "Game image"}
                           fill
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"

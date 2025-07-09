@@ -43,7 +43,7 @@ export default function DashboardPage() {
       <div className="flex items-center gap-4 mb-4">
         {project.imageUrl && (
           <Image
-            src={getFullImageUrl(project.imageUrl) as string}
+            src={getFullImageUrl(project.imageUrl) ? getFullImageUrl(project.imageUrl) : "/no-image.png"}
             alt={project.name}
             width={64}
             height={64}
