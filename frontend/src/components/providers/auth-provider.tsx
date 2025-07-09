@@ -54,7 +54,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 // Configure axios defaults
-axios.defaults.baseURL = API_URL
+axios.defaults.baseURL = API_URL?.endsWith('/api') ? API_URL : `${API_URL}/api`
 
 // Add auth token to requests
 axios.interceptors.request.use((config) => {
@@ -154,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, data)
+      const response = await axios.post('/auth/register', data)
       
       const { user, tokens } = response.data.data
       
