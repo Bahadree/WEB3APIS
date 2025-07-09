@@ -111,9 +111,8 @@ export default function DashboardPage() {
       setLoading(true);
       setError("");
       try {
-        // Get accessToken directly from localStorage for fetch
         const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-        const res = await fetch("/api/games/my", {
+        const res = await fetch(`/api/games/my`, {
           headers: { "Authorization": `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("API error");
@@ -127,7 +126,7 @@ export default function DashboardPage() {
     }
     async function fetchAllGames() {
       try {
-        const res = await fetch("/api/games/all");
+        const res = await fetch('/api/games/all');
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setAllGames(data.games || []);
@@ -139,10 +138,20 @@ export default function DashboardPage() {
 
   // Yardımcı: Resim URL'sini tam URL'ye çevir
   function getFullImageUrl(url?: string | null) {
-    if (!url) return "/no-image.png";
-    if (url.startsWith("http")) return url;
-    if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
-    return url;
+    if (!url || typeof url !== "string" || url === "null" || url === "undefined") {
+      return "/placeholder.png";
+    }
+    if (url.startsWith("http://backend:5000/uploads/")) {
+      return url.replace("http://backend:5000", "");
+    }
+    if (url.startsWith("/uploads/")) {
+      return url;
+    }
+    // Eğer url mutlak bir URL ise (http/https ile başlıyorsa) onu döndür, aksi halde placeholder
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    }
+    return "/placeholder.png";
   }
 
   // Yardımcı: Açıklama kısaltıcı
@@ -173,11 +182,11 @@ export default function DashboardPage() {
           </button>
           <div className="w-full aspect-video rounded-xl overflow-hidden mb-4">
             <Image
-              src={getFullImageUrl(game.image_url)}
-              alt={game.name}
+              src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+              alt={game.name || "Game image"}
               fill
               className="object-cover w-full h-full"
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, 400px"
               priority
             />
           </div>
@@ -268,11 +277,11 @@ export default function DashboardPage() {
                       {/* Background image as absolute fill */}
                       <div className="absolute inset-0 z-0">
                         <Image
-                          src={getFullImageUrl(game.image_url)}
-                          alt={game.name}
+                          src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+                          alt={game.name || "Game image"}
                           fill
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                          sizes="100vw"
+                          sizes="(max-width: 768px) 100vw, 400px"
                           priority
                         />
                       </div>
@@ -346,11 +355,11 @@ export default function DashboardPage() {
                       {/* Background image as absolute fill */}
                       <div className="absolute inset-0 z-0">
                         <Image
-                          src={getFullImageUrl(game.image_url)}
-                          alt={game.name}
+                          src={getFullImageUrl(game.image_url) || "/placeholder.png"}
+                          alt={game.name || "Game image"}
                           fill
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                          sizes="100vw"
+                          sizes="(max-width: 768px) 100vw, 400px"
                           priority
                         />
                       </div>

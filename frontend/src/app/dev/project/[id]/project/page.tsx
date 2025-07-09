@@ -10,8 +10,13 @@ import Image from "next/image";
 // Yardımcı: Resim URL'sini tam URL'ye çevir
 function getFullImageUrl(url?: string | null) {
   if (!url) return undefined;
-  if (url.startsWith("http")) return url;
-  if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
+  // Eğer backend'den tam URL (http://backend:5000/uploads/...) gelirse, sadece /uploads/... kısmını döndür
+  if (url.startsWith('http://backend:5000/uploads/')) {
+    return url.replace('http://backend:5000', '');
+  }
+  if (url.startsWith('/uploads/')) {
+    return url;
+  }
   return url;
 }
 
@@ -55,7 +60,7 @@ export default function ProjectSettingsPage() {
     setSaveMsg("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dev/projects/${project.id}`, {
+      const res = await fetch(`/api/dev/projects/${project.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(field === "name" ? { name } : { description }),
@@ -84,7 +89,7 @@ export default function ProjectSettingsPage() {
       const formData = new FormData();
       formData.append("image", file);
       const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dev/projects/${project.id}/image`, {
+      const res = await fetch(`/api/dev/projects/${project.id}/image`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -119,6 +124,7 @@ export default function ProjectSettingsPage() {
                 width={180}
                 height={180}
                 className="rounded shadow border border-border object-cover"
+                unoptimized
               />
             </div>
           ) : (

@@ -56,7 +56,7 @@ export default function ApiKeysPage() {
     setApiError("");
     setApiKeyCreated(null);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-    fetch(`/api/dev/projects/${project.id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -99,7 +99,7 @@ export default function ApiKeysPage() {
     setApiError("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`/api/dev/projects/${project.id}/api-keys/${deleteKeyId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/${deleteKeyId}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` },
       });
@@ -175,7 +175,7 @@ export default function ApiKeysPage() {
                       setApiKeyCreated(null);
                       const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
                       try {
-                        const res = await fetch(`/api/dev/projects/${project.id}/api-keys/reset`, {
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/reset`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                           body: JSON.stringify({ permissions }),
@@ -283,7 +283,7 @@ export default function ApiKeysPage() {
                   setApiError("");
                   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
                   try {
-                    const res = await fetch(`/api/dev/projects/${project.id}/api-keys/${apiKeys[0].id}`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}/api-keys/${apiKeys[0].id}`, {
                       method: "PUT",
                       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                       body: JSON.stringify({ permissions }),

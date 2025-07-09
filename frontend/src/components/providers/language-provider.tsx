@@ -10,7 +10,15 @@ const LanguageContext = createContext({
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<string>(defaultLang);
+  const [lang, setLangState] = useState<string>("en");
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    // SSR/CSR farkını önlemek için dili client'ta localStorage'dan al
+    const storedLang = localStorage.getItem("lang") || "en";
+    setLangState(storedLang);
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("lang", lang);
@@ -19,6 +27,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLang = (newLang: string) => {
     setLangState(newLang);
   };
+
+  if (!hydrated) return null; // İlk renderda SSR/CSR farkını önle
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>

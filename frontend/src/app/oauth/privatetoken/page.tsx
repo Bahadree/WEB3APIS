@@ -51,7 +51,7 @@ function OAuthPrivatetokenInner() {
   const handleAuthorize = async () => {
     setError('');
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-    const res = await fetch('/api/oauth/authorize', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/oauth/authorize`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

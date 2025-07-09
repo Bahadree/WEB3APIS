@@ -175,8 +175,7 @@ export default function Hero() {
           {/* Main Heading */}
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-10 lg:mb-16 leading-tight min-h-[5.5rem] max-w-4xl mx-auto text-center drop-shadow-lg"
-            style={{ letterSpacing: '-0.03em' }}
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-10 lg:mb-16 leading-tight min-h-[5.5rem] max-w-4xl mx-auto text-center drop-shadow-lg [-letter-spacing:-0.03em]"
           >
             <span className="block">{currentT.heading1}</span>
             <span className="block gradient-text">{currentT.heading2}</span>

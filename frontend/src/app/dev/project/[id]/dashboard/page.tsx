@@ -6,8 +6,12 @@ import { useEffect, useState } from "react";
 // Yardımcı: Resim URL'sini tam URL'ye çevir
 function getFullImageUrl(url?: string | null) {
   if (!url) return undefined;
-  if (url.startsWith("http")) return url;
-  if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
+  if (url.startsWith('http://backend:5000/uploads/')) {
+    return url.replace('http://backend:5000', '');
+  }
+  if (url.startsWith('/uploads/')) {
+    return url;
+  }
   return url;
 }
 
@@ -17,7 +21,7 @@ export default function DashboardPage() {
   const [gamesLoading, setGamesLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/games")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/games`)
       .then((r) => r.json())
       .then((d) => {
         const games = (d.data?.games || []).map((g: any) => ({

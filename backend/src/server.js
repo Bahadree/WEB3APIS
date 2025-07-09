@@ -5,6 +5,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+const path = require('path');
 
 const { connectDB, connectRedis } = require('./config/database');
 const authRoutes = require('./routes/auth');
@@ -32,38 +33,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:3000',
-  'https://web3apis.up.railway.app'
-];
-app.use(cors({
-  origin: (origin, callback) => {
-    // origin undefined ise (ör: Postman, curl) veya izin verilenler arasında ise izin ver
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error('CORS engellendi:', origin);
-      callback(new Error('Not allowed by CORS: ' + origin));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-// Preflight (OPTIONS) istekleri için genel yanıt
-app.options('*', cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors({ origin: '*', credentials: true }));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -99,7 +69,15 @@ app.use('/api/dev/projects', projectImageRoutes);
 console.log('Route register: /api/oauth', typeof oauthRoutes);
 app.use('/api/oauth', oauthRoutes);
 console.log('Route register: /uploads', 'static');
-app.use('/uploads', express.static(require('path').join(__dirname, '../uploads')));
+// /uploads için CORS'u tamamen açık yap
+app.use('/uploads', (req, res, next) => {
+  console.log('UPLOADS İSTEĞİ:', req.method, req.originalUrl);
+  next();
+}, cors({ origin: '*' }), (req, res, next) => {
+  const filePath = path.join(__dirname, '../uploads', req.path);
+  console.log('İstenen dosya yolu:', filePath);
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 // 404 handler
 app.use('*', (req, res) => {

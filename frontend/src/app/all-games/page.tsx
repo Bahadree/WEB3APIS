@@ -13,8 +13,12 @@ interface Game {
 // Yardımcı: Resim URL'sini tam URL'ye çevir
 function getFullImageUrl(url?: string | null) {
   if (!url) return undefined;
-  if (url.startsWith("http")) return url;
-  if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
+  if (url.startsWith('http://backend:5000/uploads/')) {
+    return url.replace('http://backend:5000', '');
+  }
+  if (url.startsWith('/uploads/')) {
+    return url;
+  }
   return url;
 }
 
@@ -24,7 +28,8 @@ export default function AllGamesPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/games")
+    // Tüm API istekleri sadece /api/... ile başlamalı
+    fetch(`/api/games`)
       .then((r) => r.json())
       .then((d) => {
         const games = (d.data?.games || []).map((g: any) => ({

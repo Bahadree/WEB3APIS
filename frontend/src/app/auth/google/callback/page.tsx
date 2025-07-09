@@ -9,7 +9,7 @@ export default function GoogleCallback() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     if (code) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/oauth/google/callback`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/oauth/google/callback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),

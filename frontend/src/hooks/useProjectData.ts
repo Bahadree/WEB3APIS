@@ -28,7 +28,10 @@ export function useProjectData() {
     if (!id) return;
     setLoading(true);
     setError("");
-    axios.get(`/dev/projects/${id}`)
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
+    axios.get(`/api/dev/projects/${id}`,
+      token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+    )
       .then((r) => {
         const d = r.data;
         setProject({

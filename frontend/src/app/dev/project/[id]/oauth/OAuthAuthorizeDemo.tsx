@@ -27,6 +27,7 @@ export default function OAuthAuthorizeDemo() {
           setLoading(false);
           return;
         }
+        // Tüm API istekleri sadece /api/... ile başlamalı
         const res = await fetch(`/api/dev/projects/${projectId}`, {
           headers: { Authorization: `Bearer ${jwt}` }
         });
@@ -74,7 +75,7 @@ export default function OAuthAuthorizeDemo() {
       return;
     }
     try {
-      const res = await fetch("/api/oauth/request", {
+      const res = await fetch(`/api/oauth/request`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ apiKey }),
@@ -120,7 +121,7 @@ export default function OAuthAuthorizeDemo() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/oauth/token", {
+      const res = await fetch(`/api/oauth/token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ request_token: requestToken }),
@@ -157,7 +158,7 @@ export default function OAuthAuthorizeDemo() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/oauth/userdata?access_token=${accessToken}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/oauth/userdata?access_token=${accessToken}`);
       const data = await res.json();
       setUserInfo(data);
       setStep(3);

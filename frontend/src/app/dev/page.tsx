@@ -119,7 +119,7 @@ export default function DevelopersPage() {
     if (isAuthenticated !== true) return;
     setLoading(true);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-    fetch("/api/dev/projects", {
+    fetch(`/api/dev/projects`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then((r) => r.json())
@@ -171,7 +171,7 @@ export default function DevelopersPage() {
     setApiKeyCreated(null);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`/api/dev/projects/${project.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("API error");
@@ -192,7 +192,7 @@ export default function DevelopersPage() {
     setApiError("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`/api/dev/projects/${selectedProject.id}/api-keys/${keyId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${selectedProject.id}/api-keys/${keyId}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` },
       });
@@ -213,9 +213,13 @@ export default function DevelopersPage() {
 
   // Yardımcı: Resim URL'sini tam URL'ye çevir
   function getFullImageUrl(url?: string | null) {
-    if (!url) return "/no-image.png"; // fallback görsel
-    if (url.startsWith("http")) return url;
-    if (url.startsWith("/uploads/")) return `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '')}${url}`;
+    if (!url) return undefined;
+    if (url.startsWith('http://backend:5000/uploads/')) {
+      return url.replace('http://backend:5000', '');
+    }
+    if (url.startsWith('/uploads/')) {
+      return url;
+    }
     return url;
   }
 
@@ -276,7 +280,7 @@ export default function DevelopersPage() {
                               alt={p.name}
                               fill
                               className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                              sizes="100vw"
+                              sizes="(max-width: 768px) 100vw, 400px"
                               priority
                             />
                           </div>

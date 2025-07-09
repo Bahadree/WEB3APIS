@@ -51,54 +51,6 @@ interface WalletAuthData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-// Configure axios defaults
-axios.defaults.baseURL = API_URL?.endsWith('/api') ? API_URL : `${API_URL}/api`
-
-// Add auth token to requests
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
-// Handle token refresh
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-      
-      const refreshToken = localStorage.getItem('refreshToken')
-      if (refreshToken) {
-        try {
-          const response = await axios.post(`${API_URL}/auth/refresh-token`, {
-            refreshToken
-          })
-          
-          const { accessToken, refreshToken: newRefreshToken } = response.data.data
-          localStorage.setItem('accessToken', accessToken)
-          localStorage.setItem('refreshToken', newRefreshToken)
-          
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`
-          return axios(originalRequest)
-        } catch (refreshError) {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-          window.location.href = '/auth/login'
-        }
-      }
-    }
-    
-    return Promise.reject(error)
-  }
-)
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -106,32 +58,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAuthenticated = !!user
 
+  // Token ekleme işlemini sadece tarayıcıda ve component içinde yap
+  useEffect(() => {
+    axios.interceptors.request.use((config) => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
+      return config;
+    });
+  }, []);
+
   // Check for existing session on mount
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
-    if (token) {
-      fetchUser()
-    } else {
-      setIsLoading(false)
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        fetchUser();
+      } else {
+        setIsLoading(false);
+      }
     }
   }, [])
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/me`)
-      setUser(response.data.data.user)
+      let token = null;
+      if (typeof window !== 'undefined') {
+        token = localStorage.getItem('accessToken');
+      }
+      const response = await axios.get('/api/auth/me', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      setUser(response.data.data.user);
     } catch (error) {
-      console.error('Failed to fetch user:', error)
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      console.error('Failed to fetch user:', error);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   const login = async (identifier: string, password: string) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      // API isteklerini proxy üzerinden yap
+      const response = await axios.post('/api/auth/login', {
         identifier,
         password
       })
@@ -174,7 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const walletAuth = async (data: WalletAuthData) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/wallet-auth`, data)
+      const response = await axios.post('/auth/wallet-auth', data)
       
       const { user, tokens } = response.data.data
       
@@ -205,7 +181,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!refreshToken) throw new Error('No refresh token')
 
     try {
-      const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+      const response = await axios.post('/auth/refresh-token', {
         refreshToken
       })
       
