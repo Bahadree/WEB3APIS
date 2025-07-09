@@ -31,15 +31,16 @@
     "ethers": "^6.13.0",
     "framer-motion": "^12.23.0",
     "lucide-react": "^0.525.0",
-    "next": "15.3.5",
+    "next": "^14.0.0",
     "next-themes": "^0.4.6",
     "qr": "^0.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.52.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.5.0",
     "siwe": "^3.0.0",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5.5.0",
     "viem": "^2.15.0",
     "wagmi": "^2.10.0",
@@ -48,15 +49,13 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.13",
     "@types/uuid": "^10.0.0",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.19",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.3.5",
     "pino-pretty": "^13.0.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11"
+    "postcss": "^8.4.38"
   },
   "overrides": {
     "@paulmillr/qr": "npm:qr@^0.5.0"

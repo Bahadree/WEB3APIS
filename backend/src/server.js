@@ -83,14 +83,22 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
+// API routes için debug logları
+console.log('Route register: /api/auth', typeof authRoutes);
 app.use('/api/auth', authRoutes);
+console.log('Route register: /api/users', typeof userRoutes);
 app.use('/api/users', userRoutes);
+console.log('Route register: /api/games', typeof gameRoutes);
 app.use('/api/games', gameRoutes);
+console.log('Route register: /api/nfts', typeof nftRoutes);
 app.use('/api/nfts', nftRoutes);
+console.log('Route register: /api/dev', typeof devRoutes);
 app.use('/api/dev', devRoutes);
+console.log('Route register: /api/dev/projects', typeof projectImageRoutes);
 app.use('/api/dev/projects', projectImageRoutes);
+console.log('Route register: /api/oauth', typeof oauthRoutes);
 app.use('/api/oauth', oauthRoutes);
+console.log('Route register: /uploads', 'static');
 app.use('/uploads', express.static(require('path').join(__dirname, '../uploads')));
 
 // 404 handler

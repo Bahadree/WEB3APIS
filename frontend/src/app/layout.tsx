@@ -7,6 +7,7 @@ import { AuthProvider } from '@/components/providers/auth-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { Toaster } from 'react-hot-toast'
 import { LanguageProvider } from '@/components/providers/language-provider'
+import Navbar from '@/components/layout/navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,6 +60,7 @@ export default function RootLayout({
             <Web3Provider>
               <AuthProvider>
                 <LanguageProvider>
+                  <Navbar />
                   {children}
                 </LanguageProvider>
                 <Toaster 
