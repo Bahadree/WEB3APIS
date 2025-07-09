@@ -42,6 +42,8 @@ export default function ApiKeysPage() {
   });
   const [permissionsChanged, setPermissionsChanged] = useState(false);
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const permissionList = [
     { key: 'read', label: 'read', desc: 'Verileri okuyabilir' },
     { key: 'write', label: 'write', desc: 'Yeni veri oluşturabilir' },
