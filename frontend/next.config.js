@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === "production";
 const nextConfig = {
   images: {
     domains: [
@@ -20,6 +21,9 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   async rewrites() {
+    if (isProd) {
+      return [];
+    }
     return [
       {
         source: '/api/:path*',
