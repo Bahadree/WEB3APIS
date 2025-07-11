@@ -130,22 +130,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      // Doğru proxy ile backend'e gitsin diye endpoint'i /api/auth/register yapıyoruz
-      const response = await axios.post('/api/auth/register', data)
-      
-      const { user, tokens } = response.data.data
-      
-      localStorage.setItem('accessToken', tokens.accessToken)
-      localStorage.setItem('refreshToken', tokens.refreshToken)
-      
-      setUser(user)
-      toast.success('Account created successfully!')
-      
-      router.push('/dashboard')
+      // Production ortamında doğrudan backend'e istek at
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        ? process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')
+        : '';
+      const endpoint = apiUrl + '/auth/register';
+      const response = await axios.post(endpoint, data);
+      const { user, tokens } = response.data.data;
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      setUser(user);
+      toast.success('Account created successfully!');
+      router.push('/dashboard');
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Registration failed'
-      toast.error(message)
-      throw error
+      const message = error.response?.data?.message || 'Registration failed';
+      toast.error(message);
+      throw error;
     }
   }
 
