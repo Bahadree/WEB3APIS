@@ -16,6 +16,7 @@ const devRoutes = require('./routes/dev');
 const projectImageRoutes = require('./routes/projectImage');
 const oauthRoutes = require('./routes/oauth');
 const errorHandler = require('./middleware/errorHandler');
+const { redisSet, redisGet, redisDel } = require('./utils/upstashRedis');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -130,3 +131,8 @@ process.on('SIGTERM', async () => {
 startServer();
 
 module.exports = app;
+
+// Örnek kullanım:
+// await redisSet('anahtar', { veri: 'örnek' });
+// const veri = await redisGet('anahtar');
+// await redisDel('anahtar');

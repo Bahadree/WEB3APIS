@@ -65,37 +65,29 @@ const query = async (text, params) => {
   }
 };
 
-// Redis helpers
+// Redis helpers (Upstash REST API ile uyumlu)
 const setCache = async (key, value, expiration = 3600) => {
   try {
-    if (redisClient && redisClient.isOpen) {
-      await redisClient.setEx(key, expiration, JSON.stringify(value));
-    }
+    await redisSet(key, value, expiration);
   } catch (error) {
-    console.error('Redis set error:', error);
+    console.error('Upstash Redis set error:', error);
   }
 };
 
 const getCache = async (key) => {
   try {
-    if (redisClient && redisClient.isOpen) {
-      const value = await redisClient.get(key);
-      return value ? JSON.parse(value) : null;
-    }
-    return null;
+    return await redisGet(key);
   } catch (error) {
-    console.error('Redis get error:', error);
+    console.error('Upstash Redis get error:', error);
     return null;
   }
 };
 
 const deleteCache = async (key) => {
   try {
-    if (redisClient && redisClient.isOpen) {
-      await redisClient.del(key);
-    }
+    await redisDel(key);
   } catch (error) {
-    console.error('Redis delete error:', error);
+    console.error('Upstash Redis delete error:', error);
   }
 };
 
@@ -103,8 +95,8 @@ module.exports = {
   pool,
   query,
   connectDB,
-  connectRedis,
-  redisClient,
+  connectRedis: async () => {}, // Artık klasik Redis bağlantısı gerekmiyor
+  redisClient: null,
   setCache,
   getCache,
   deleteCache,
