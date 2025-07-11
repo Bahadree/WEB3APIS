@@ -7,7 +7,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const path = require('path');
 
-const { connectDB, connectRedis } = require('./config/database');
+const { connectDB, connectRedis, redisClient } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/games');
@@ -111,13 +111,19 @@ const startServer = async () => {
 };
 
 // Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\n🔄 Gracefully shutting down server...');
+process.on('SIGINT', async () => {
+  if (redisClient && redisClient.isOpen) {
+    await redisClient.quit();
+    console.log('🔌 Redis connection closed');
+  }
   process.exit(0);
 });
 
-process.on('SIGTERM', () => {
-  console.log('\n🔄 Gracefully shutting down server...');
+process.on('SIGTERM', async () => {
+  if (redisClient && redisClient.isOpen) {
+    await redisClient.quit();
+    console.log('🔌 Redis connection closed');
+  }
   process.exit(0);
 });
 
