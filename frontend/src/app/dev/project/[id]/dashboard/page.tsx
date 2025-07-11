@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 // Yardımcı: Resim URL'sini tam URL'ye çevir
-function getFullImageUrl(url?: string | null) {
-  if (!url) return undefined;
+function getFullImageUrl(url?: string | null): string {
+  if (!url) return "/no-image.png";
   if (url.startsWith('http://backend:5000/uploads/')) {
     return url.replace('http://backend:5000', '');
   }
@@ -43,7 +43,7 @@ export default function DashboardPage() {
       <div className="flex items-center gap-4 mb-4">
         {project.imageUrl && (
           <Image
-            src={getFullImageUrl(project.imageUrl) ? getFullImageUrl(project.imageUrl) : "/no-image.png"}
+            src={getFullImageUrl(project.imageUrl)}
             alt={project.name}
             width={64}
             height={64}
@@ -71,7 +71,7 @@ export default function DashboardPage() {
                 {g.imageUrl && (
                   <div className="mb-2 flex items-center justify-center w-full">
                     <img
-                      src={getFullImageUrl(g.imageUrl)}
+                      src={getFullImageUrl(g.imageUrl) || "/no-image.png"}
                       alt={g.name}
                       className="rounded object-cover border border-border"
                       style={{ width: 80, height: 80, objectFit: 'cover', margin: '0 auto' }}
