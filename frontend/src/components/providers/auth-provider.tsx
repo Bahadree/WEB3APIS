@@ -106,35 +106,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (identifier: string, password: string) => {
     try {
-      // API isteklerini proxy üzerinden yap
-      const response = await axios.post('/api/auth/login', {
+      // Her ortamda /api ile başlat
+      const endpoint = '/api/auth/login';
+      const response = await axios.post(endpoint, {
         identifier,
         password
-      })
-
-      const { user, tokens } = response.data.data
-      
-      localStorage.setItem('accessToken', tokens.accessToken)
-      localStorage.setItem('refreshToken', tokens.refreshToken)
-      
-      setUser(user)
-      toast.success('Successfully logged in!')
-      
-      router.push('/dashboard')
+      });
+      const { user, tokens } = response.data.data;
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      setUser(user);
+      toast.success('Successfully logged in!');
+      router.push('/dashboard');
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed'
-      toast.error(message)
-      throw error
+      const message = error.response?.data?.message || 'Login failed';
+      toast.error(message);
+      throw error;
     }
-  }
+  };
 
   const register = async (data: RegisterData) => {
     try {
-      // Production ortamında doğrudan backend'e istek at
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        ? process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')
-        : '';
-      const endpoint = apiUrl + '/auth/register';
+      // Her ortamda /api ile başlat
+      const endpoint = '/api/auth/register';
       const response = await axios.post(endpoint, data);
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
@@ -147,27 +141,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.error(message);
       throw error;
     }
-  }
+  };
 
   const walletAuth = async (data: WalletAuthData) => {
     try {
-      const response = await axios.post('/auth/wallet-auth', data)
-      
-      const { user, tokens } = response.data.data
-      
-      localStorage.setItem('accessToken', tokens.accessToken)
-      localStorage.setItem('refreshToken', tokens.refreshToken)
-      
-      setUser(user)
-      toast.success('Wallet connected successfully!')
-      
-      router.push('/dashboard')
+      const endpoint = '/api/auth/wallet-auth';
+      const response = await axios.post(endpoint, data);
+      const { user, tokens } = response.data.data;
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      setUser(user);
+      toast.success('Wallet connected successfully!');
+      router.push('/dashboard');
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Wallet authentication failed'
-      toast.error(message)
-      throw error
+      const message = error.response?.data?.message || 'Wallet authentication failed';
+      toast.error(message);
+      throw error;
     }
-  }
+  };
 
   const logout = () => {
     localStorage.removeItem('accessToken')
@@ -178,22 +169,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const refreshToken = async () => {
-    const refreshToken = localStorage.getItem('refreshToken')
-    if (!refreshToken) throw new Error('No refresh token')
-
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) throw new Error('No refresh token');
     try {
-      const response = await axios.post('/auth/refresh-token', {
+      const endpoint = '/api/auth/refresh-token';
+      const response = await axios.post(endpoint, {
         refreshToken
-      })
-      
-      const { accessToken, refreshToken: newRefreshToken } = response.data.data
-      localStorage.setItem('accessToken', accessToken)
-      localStorage.setItem('refreshToken', newRefreshToken)
+      });
+      const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
     } catch (error) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      setUser(null)
-      throw error
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
+      throw error;
     }
   }
 
