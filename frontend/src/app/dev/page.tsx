@@ -212,8 +212,8 @@ export default function DevelopersPage() {
   };
 
   // Yardımcı: Resim URL'sini tam URL'ye çevir
-  function getFullImageUrl(url?: string | null) {
-    if (!url) return undefined;
+  function getFullImageUrl(url?: string | null): string {
+    if (!url) return "/no-image.png";
     if (url.startsWith('http://backend:5000/uploads/')) {
       return url.replace('http://backend:5000', '');
     }
@@ -276,7 +276,7 @@ export default function DevelopersPage() {
                           {/* Background image as absolute fill */}
                           <div className="absolute inset-0 z-0">
                             <Image
-                              src={getFullImageUrl(p.imageUrl) ? getFullImageUrl(p.imageUrl) : "/no-image.png"}
+                              src={getFullImageUrl(p.imageUrl)}
                               alt={p.name}
                               fill
                               className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
