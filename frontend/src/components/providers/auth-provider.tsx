@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { getApiUrl } from '@/utils/getApiUrl'
 
 interface User {
   id: string
@@ -106,8 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (identifier: string, password: string) => {
     try {
-      // Her ortamda /api ile başlat
-      const endpoint = '/api/auth/login';
+      const endpoint = getApiUrl('/auth/login');
       const response = await axios.post(endpoint, {
         identifier,
         password
@@ -127,8 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      // Her ortamda /api ile başlat
-      const endpoint = '/api/auth/register';
+      const endpoint = getApiUrl('/auth/register');
       const response = await axios.post(endpoint, data);
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
@@ -145,7 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const walletAuth = async (data: WalletAuthData) => {
     try {
-      const endpoint = '/api/auth/wallet-auth';
+      const endpoint = getApiUrl('/auth/wallet-auth');
       const response = await axios.post(endpoint, data);
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
@@ -172,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) throw new Error('No refresh token');
     try {
-      const endpoint = '/api/auth/refresh-token';
+      const endpoint = getApiUrl('/auth/refresh-token');
       const response = await axios.post(endpoint, {
         refreshToken
       });
