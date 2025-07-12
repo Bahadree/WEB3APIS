@@ -134,7 +134,7 @@ export default function DashboardPage() {
     }
     if (isAuthenticated) fetchGames();
     fetchAllGames();
-  }, [isAuthenticated, user, lang]);
+  }, [isAuthenticated, user, lang, currentT.error]);
 
   // Yardımcı: Resim URL'sini tam URL'ye çevir
   function getFullImageUrl(url?: string | null) {

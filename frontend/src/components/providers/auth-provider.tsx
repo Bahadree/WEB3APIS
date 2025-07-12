@@ -105,13 +105,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // API endpoint helper
+  const getEndpoint = (path: string) => {
+    if (process.env.NODE_ENV === 'production') {
+      return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
+    }
+    return `/api${path}`;
+  };
+
   const login = async (identifier: string, password: string) => {
     try {
-      const endpoint = getApiUrl('/auth/login');
-      const response = await axios.post(endpoint, {
-        identifier,
-        password
-      });
+      const endpoint = getEndpoint('/auth/login');
+      const response = await axios.post(endpoint, { identifier, password });
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
@@ -127,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: RegisterData) => {
     try {
-      const endpoint = getApiUrl('/auth/register');
+      const endpoint = getEndpoint('/auth/register');
       const response = await axios.post(endpoint, data);
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
@@ -144,7 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const walletAuth = async (data: WalletAuthData) => {
     try {
-      const endpoint = getApiUrl('/auth/wallet-auth');
+      const endpoint = getEndpoint('/auth/wallet-auth');
       const response = await axios.post(endpoint, data);
       const { user, tokens } = response.data.data;
       localStorage.setItem('accessToken', tokens.accessToken);
@@ -171,10 +176,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) throw new Error('No refresh token');
     try {
-      const endpoint = getApiUrl('/auth/refresh-token');
-      const response = await axios.post(endpoint, {
-        refreshToken
-      });
+      const endpoint = getEndpoint('/auth/refresh-token');
+      const response = await axios.post(endpoint, { refreshToken });
       const { accessToken, refreshToken: newRefreshToken } = response.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', newRefreshToken);

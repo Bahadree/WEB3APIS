@@ -20,7 +20,7 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
     setHydratedLang(lang as any);
-  }, []);
+  }, [lang]);
   useEffect(() => {
     if (mounted) setHydratedLang(lang as any);
   }, [lang, mounted]);

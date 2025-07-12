@@ -70,11 +70,14 @@ export default function DashboardPage() {
               <li key={g.id} className="aspect-square bg-background border rounded-lg flex flex-col items-center justify-center p-6 transition-shadow hover:shadow-lg">
                 {g.imageUrl && (
                   <div className="mb-2 flex items-center justify-center w-full">
-                    <img
+                    <Image
                       src={getFullImageUrl(g.imageUrl) || "/no-image.png"}
                       alt={g.name}
+                      width={80}
+                      height={80}
                       className="rounded object-cover border border-border"
-                      style={{ width: 80, height: 80, objectFit: 'cover', margin: '0 auto' }}
+                      style={{ objectFit: 'cover', margin: '0 auto' }}
+                      unoptimized
                     />
                   </div>
                 )}
