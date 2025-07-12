@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/layout/navbar";
 import Image from "next/image";
+import { getApiUrl } from '@/utils/getApiUrl';
 
 interface Game {
   id: string;
@@ -29,8 +30,7 @@ export default function AllGamesPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Tüm API istekleri sadece /api/... ile başlamalı
-    fetch(`/api/games`)
+    fetch(getApiUrl('/games'))
       .then((r) => r.json())
       .then((d) => {
         const games = (d.data?.games || []).map((g: any) => ({

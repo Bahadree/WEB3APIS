@@ -2,6 +2,7 @@
 import { useProjectData } from "@/hooks/useProjectData";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { getApiUrl } from '@/utils/getApiUrl';
 
 // Yardımcı: Resim URL'sini tam URL'ye çevir
 function getFullImageUrl(url?: string | null): string {
@@ -21,7 +22,7 @@ export default function DashboardPage() {
   const [gamesLoading, setGamesLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/games`)
+    fetch(getApiUrl('/games'))
       .then((r) => r.json())
       .then((d) => {
         const games = (d.data?.games || []).map((g: any) => ({

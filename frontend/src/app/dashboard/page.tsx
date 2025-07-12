@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Gamepad2, Zap } from "lucide-react";
 import Navbar from "@/components/layout/navbar";
 import Image from "next/image";
+import { getApiUrl } from '@/utils/getApiUrl';
 
 export default function DashboardPage() {
   const { user, isAuthenticated } = useAuth();
@@ -112,7 +113,7 @@ export default function DashboardPage() {
       setError("");
       try {
         const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-        const res = await fetch(`/api/games/my`, {
+        const res = await fetch(getApiUrl('/games/my'), {
           headers: { "Authorization": `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("API error");
@@ -126,7 +127,7 @@ export default function DashboardPage() {
     }
     async function fetchAllGames() {
       try {
-        const res = await fetch('/api/games/all');
+        const res = await fetch(getApiUrl('/games/all'));
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setAllGames(data.games || []);

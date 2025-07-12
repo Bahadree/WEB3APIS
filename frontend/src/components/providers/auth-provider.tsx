@@ -194,9 +194,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Backend'deki Google OAuth endpointine yönlendir
     let baseUrl = '';
     if (process.env.NODE_ENV === 'production') {
-      baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '') || '';
+      baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
     }
-    window.location.href = `${baseUrl}/api/auth/google`;
+    window.location.href = `${baseUrl}/google`;
   }
 
   const value = {
