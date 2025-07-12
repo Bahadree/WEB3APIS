@@ -71,6 +71,6 @@
   "author": "Web3APIs Team",
   "license": "MIT",
   "engines": {
-    "node": ">=20.19.0"
+    "node": "20.x"
   }
 }

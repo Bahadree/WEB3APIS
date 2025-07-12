@@ -189,6 +189,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Google Auth giriş fonksiyonu
+  const googleLogin = () => {
+    // Backend'deki Google OAuth endpointine yönlendir
+    let baseUrl = '';
+    if (process.env.NODE_ENV === 'production') {
+      baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '') || '';
+    }
+    window.location.href = `${baseUrl}/api/auth/google`;
+  }
+
   const value = {
     user,
     isLoading,
@@ -198,6 +208,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     walletAuth,
     logout,
     refreshToken,
+    googleLogin,
   }
 
   return (
@@ -208,9 +219,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }
