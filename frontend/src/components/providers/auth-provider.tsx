@@ -90,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined') {
         token = localStorage.getItem('accessToken');
       }
-      const response = await axios.get('/api/auth/me', {
+      const response = await axios.get(getEndpoint('/auth/me'), {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setUser(response.data.data.user);

@@ -215,10 +215,15 @@ export default function DevelopersPage() {
   // Yardımcı: Resim URL'sini tam URL'ye çevir
   function getFullImageUrl(url?: string | null): string {
     if (!url) return "/no-image.png";
+    // Eski local backend URL'sini kaldır
     if (url.startsWith('http://backend:5000/uploads/')) {
-      return url.replace('http://backend:5000', '');
+      url = url.replace('http://backend:5000', '');
     }
+    // Production'da /uploads/ ile başlayanlar için tam backend URL'si ekle
     if (url.startsWith('/uploads/')) {
+      if (process.env.NODE_ENV === 'production') {
+        return (process.env.NEXT_PUBLIC_API_URL || '') + url;
+      }
       return url;
     }
     return url;
