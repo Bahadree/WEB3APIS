@@ -191,12 +191,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Google Auth giriş fonksiyonu
   const googleLogin = () => {
-    // Backend'deki Google OAuth endpointine yönlendir
-    let baseUrl = '';
+    // Her zaman geçerli bir redirect_uri gönder
+    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    let backendUrl = '';
     if (process.env.NODE_ENV === 'production') {
-      baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      backendUrl = process.env.NEXT_PUBLIC_API_URL || '';
     }
-    window.location.href = `${baseUrl}/google`;
+    // Backend'e redirect_uri parametresi ile yönlendir
+    window.location.href = `${backendUrl}/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   }
 
   const value = {

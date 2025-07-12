@@ -6,6 +6,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { useLanguage } from "@/components/providers/language-provider";
 import Navbar from "@/components/layout/navbar";
 import Image from "next/image";
+import { getApiUrl } from '@/utils/getApiUrl';
 
 // Type definitions for better type safety
 interface Project {
@@ -119,7 +120,7 @@ export default function DevelopersPage() {
     if (isAuthenticated !== true) return;
     setLoading(true);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
-    fetch(`/api/dev/projects`, {
+    fetch(getApiUrl('/dev/projects'), {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then((r) => r.json())
@@ -146,7 +147,7 @@ export default function DevelopersPage() {
     setError("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch("/api/dev/projects", {
+      const res = await fetch(getApiUrl('/dev/projects'), {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(form)
@@ -171,7 +172,7 @@ export default function DevelopersPage() {
     setApiKeyCreated(null);
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${project.id}`, {
+      const res = await fetch(getApiUrl(`/dev/projects/${project.id}`), {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("API error");
@@ -192,7 +193,7 @@ export default function DevelopersPage() {
     setApiError("");
     const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dev/projects/${selectedProject.id}/api-keys/${keyId}`, {
+      const res = await fetch(getApiUrl(`/dev/projects/${selectedProject.id}/api-keys/${keyId}`), {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` },
       });
